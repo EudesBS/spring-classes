@@ -1,39 +1,59 @@
 package com.estudos.springboot;
 
+import com.estudos.springboot.domain.entity.Cliente;
+import com.estudos.springboot.domain.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @SpringBootApplication
-@RestController
 public class VendasApplication {
 
-    @Value("${application.name}")
-    private String applicationName;
-
-    /*@Autowired
-    @Qualifier("applicationName")
-    private String applicationName;*/
-
-    @Gato
-    private Animal animal;
-
-    @Bean(name = "executarAnimal")
-    public CommandLineRunner executar(){
+    @Bean
+    public CommandLineRunner init (@Autowired ClienteRepository clientes) {
         return args -> {
-            this.animal.fazerBarulho();
-        };
-    }
+            System.out.println("\nSalvando Clientes\n");
+            Cliente cliente = new Cliente();
+            cliente.setNome("Ude");
+            clientes.salvar(cliente);
 
-    @GetMapping("/hello")
-    public String helloWorld(){
-        return applicationName;
+            Cliente cliente2 = new Cliente("Julinha");
+            clientes.salvar(cliente2);
+
+            clientes.salvar(new Cliente("Outro cliente"));
+
+            List<Cliente> todosClientes = clientes.obterTodos();
+            todosClientes.forEach(System.out::println);
+
+            System.out.println("\nAtualizando Clientes\n");
+            todosClientes.forEach(c -> {
+                c.setNome(c.getNome() + " atualizado");
+                clientes.atualizar(c);
+            });
+
+            todosClientes = clientes.obterTodos();
+            todosClientes.forEach(System.out::println);
+
+            System.out.println("\nBuscando Clientes\n");
+            clientes.buscarPorNome("Outro").forEach(System.out::println);
+
+//            System.out.println("\nDeletando Clientes\n");
+//            clientes.obterTodos().forEach(c -> {
+//                clientes.deletar(c);
+//            });
+
+            todosClientes = clientes.obterTodos();
+            if (todosClientes.isEmpty()){
+                System.out.println("Nenhum cliente encontrado");
+            } else {
+                todosClientes.forEach(System.out::println);
+            }
+
+        };
     }
 
     public static void main(String[] args) {
