@@ -41,10 +41,10 @@ public class VendasApplication {
             System.out.println("\nBuscando Clientes\n");
             clientes.buscarPorNome("Outro").forEach(System.out::println);
 
-//            System.out.println("\nDeletando Clientes\n");
-//            clientes.obterTodos().forEach(c -> {
-//                clientes.deletar(c);
-//            });
+            System.out.println("\nDeletando Clientes\n");
+            clientes.obterTodos().forEach(c -> {
+                clientes.deletar(c);
+            });
 
             todosClientes = clientes.obterTodos();
             if (todosClientes.isEmpty()){
