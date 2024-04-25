@@ -1,57 +1,59 @@
 package com.estudos.springboot;
 
 import com.estudos.springboot.domain.entity.Cliente;
+import com.estudos.springboot.domain.entity.Pedido;
 import com.estudos.springboot.domain.repository.ClienteRepository;
+import com.estudos.springboot.domain.repository.PedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @SpringBootApplication
 public class VendasApplication {
 
     @Bean
-    public CommandLineRunner init (@Autowired ClienteRepository clientes) {
+    public CommandLineRunner init (@Autowired ClienteRepository clientes,
+                                   @Autowired PedidoRepository pedidos) {
         return args -> {
             System.out.println("\nSalvando Clientes\n");
             Cliente cliente = new Cliente();
             cliente.setNome("Ude");
-            clientes.salvar(cliente);
+            clientes.save(cliente);
 
             Cliente cliente2 = new Cliente("Julinha");
-            clientes.salvar(cliente2);
+            clientes.save(cliente2);
 
-            clientes.salvar(new Cliente("Outro cliente"));
+            clientes.save(new Cliente("Outro cliente"));
 
-            List<Cliente> todosClientes = clientes.obterTodos();
-            todosClientes.forEach(System.out::println);
+            Pedido p = new Pedido();
+            p.setCliente(cliente);
+            p.setDataPedido(LocalDate.now());
+            p.setTotal(BigDecimal.valueOf(100));
 
-            System.out.println("\nAtualizando Clientes\n");
-            todosClientes.forEach(c -> {
-                c.setNome(c.getNome() + " atualizado");
-                clientes.atualizar(c);
-            });
+            pedidos.save(p);
+            pedidos.findByCliente(cliente).forEach(System.out::println);
 
-            todosClientes = clientes.obterTodos();
-            todosClientes.forEach(System.out::println);
 
-            System.out.println("\nBuscando Clientes\n");
-            clientes.buscarPorNome("Outro").forEach(System.out::println);
 
-            System.out.println("\nDeletando Clientes\n");
-            clientes.obterTodos().forEach(c -> {
-                clientes.deletar(c);
-            });
 
-            todosClientes = clientes.obterTodos();
-            if (todosClientes.isEmpty()){
-                System.out.println("Nenhum cliente encontrado");
-            } else {
-                todosClientes.forEach(System.out::println);
-            }
+//            Cliente test = clientes.findClienteFetchPedidos(cliente.getId());
+//            System.out.println(test);
+//            System.out.println(test.getPedidos());
+
+//            List<Cliente> tem = clientes.encontrarPorNome("Ude");
+//            tem.forEach(System.out::println);
+//
+//            boolean existe = clientes.existsByNome("Julinha");
+//            System.out.println(existe);
+//
+//            List<Cliente> todosClientes = clientes.findAll();
+//            todosClientes.forEach(System.out::println);
 
         };
     }
