@@ -1,8 +1,16 @@
 package com.estudos.springboot.domain.entity;
 
+import lombok.*;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 @Entity
 @Table(name = "Produto")
 public class Produto {
@@ -13,32 +21,11 @@ public class Produto {
     private Integer id;
 
     @Column(name = "descricao")
+    @NotEmpty(message = "{campo.descricao.obrigatorio}")
     private String descricao;
 
     @Column(name = "preco_unitario")
+    @NotNull(message = "{campo.preco.obrigatorio}")
     private BigDecimal preco;
 
-    public Integer getId(){
-        return id;
-    }
-
-    public void setId(Integer id){
-        this.id = id;
-    }
-
-    public String getDescricao(){
-        return descricao;
-    }
-
-    public void setDescricao(){
-        this.descricao =descricao;
-    }
-
-    public BigDecimal getPreco(){
-        return preco;
-    }
-
-    public void setPreco(BigDecimal preco){
-        this.preco = preco;
-    }
 }
